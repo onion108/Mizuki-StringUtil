@@ -1,9 +1,31 @@
 #ifndef ONION27_MIZUKI_STR_H_
 #define ONION27_MIZUKI_STR_H_
 
-
+#include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#ifndef MIZUKI_STRING_NO_UTIL_MACROS
+
+#ifdef __cplusplus
+#define MIZUKI_C_LITERAL(type) type
+#else
+#define MIZUKI_C_LITERAL(type) (type)
+#endif
+
+// Construct string view from c-style string.
+#define MIZUKI_CVIEW(cstr) MIZUKI_C_LITERAL(MZStringView) { .data = cstr, .len = strlen(cstr) }
+#ifdef MIZUKI_STRING_SHORT_MACRO
+#define C_(...) MIZUKI_CVIEW(__VA_ARGS__)
+#endif
+
+// Construct string view from string.
+#define MIZUKI_SVIEW(str) MIZUKI_C_LITERAL(MZStringView) { .data = str->data, .len = str->len }
+#ifdef MIZUKI_STRING_SHORT_MACRO
+#define S_(...) MIZUKI_SVIEW(__VA_ARGS__)
+#endif
+
+#endif
 
 // A structure represents an **owned** string.
 // We assume the data is allocated on the heap.
@@ -121,5 +143,7 @@ MZStringView MZStringView_find(MZStringView sv, MZStringView pat, MZStringView *
 #ifdef __cplusplus
 }
 #endif
+
+#undef MZKprivate__FORMAT_ATTRIB_
 
 #endif // ONION27_MIZUKI_STR_H_
