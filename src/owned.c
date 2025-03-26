@@ -41,7 +41,7 @@ MZOwnedString *MZOwnedString_from_cstr(const char *str) {
 
     size_t cstr_len = strlen(str);
     if (cstr_len % 8 == 0) {
-        result->cap = cstr_len;
+        result->cap = cstr_len + 8;
     } else {
         result->cap = cstr_len / 8 * 8 + 8;
     }
@@ -63,7 +63,7 @@ MZOwnedString *MZOwnedString_from_view(MZStringView view) {
 
     size_t length = view.len;
     if (length % 8 == 0) {
-        result->cap = length;
+        result->cap = length + 8;
     } else {
         result->cap = length / 8 * 8 + 8;
     }
@@ -87,7 +87,7 @@ MZOwnedString *MZOwnedString_from_sprintf(const char *fmt, ...) {
     va_start(args, fmt);
     size_t length = vsnprintf(nullptr, 0, fmt, args);
     if (length % 8 == 0) {
-        result->cap = length;
+        result->cap = length + 8;
     } else {
         result->cap = length / 8 * 8 + 8;
     }
@@ -144,7 +144,7 @@ bool MZOwnedString_push(MZOwnedString *str, char c) {
 
 bool MZOwnedString_push_sv(MZOwnedString *str, MZStringView sv) {
     if (!str || !str->data) return false;
-    while (str->cap < str->len+sv.len) {
+    while (str->cap <= str->len+sv.len) {
         if (!try_realloc(str)) {
             return false;
         }
@@ -190,7 +190,7 @@ bool MZOwnedString_replace_at(MZOwnedString *str, MZStringView from, MZStringVie
     // Otherwise needs allocation.
     size_t delta = to.len-from.len;
     size_t offset = from.data-str->data;
-    while (str->len+delta > str->cap) {
+    while (str->len+delta >= str->cap) {
         if (!try_realloc(str)) return false;
     }
     char *ptr = str->data+offset;
@@ -198,5 +198,11 @@ bool MZOwnedString_replace_at(MZOwnedString *str, MZStringView from, MZStringVie
     memcpy(ptr, to.data, to.len);
     str->len += delta;
     return true;
+}
+
+char *MZOwnedString_to_cstr(MZOwnedString *str) {
+    assert(str->len < str->cap);
+    str->data[str->len] = 0;
+    return str->data;
 }
 

@@ -102,6 +102,10 @@ MZStringView MZOwnedString_slicebe(MZOwnedString *str, size_t begin, size_t end)
 // Please notice `from` will be invalid after replacement.
 bool MZOwnedString_replace_at(MZOwnedString *str, MZStringView from, MZStringView to);
 
+// Borrow owned string as C-style string.
+// NOTICE! You are always supposed to call this function to get the correct C-style string pointer instead of using data member directly, because data might not be zero-terminated before calling to this function.
+char *MZOwnedString_to_cstr(MZOwnedString *str);
+
 // Create a string view from c style string.
 MZStringView MZStringView_from_cstr(const char *str);
 
