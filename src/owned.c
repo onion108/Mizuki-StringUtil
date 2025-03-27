@@ -1,4 +1,7 @@
 #include "mizukistr.h"
+
+#ifndef MIZUKI_STRING_NO_ALLOC
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -205,4 +208,6 @@ char *MZOwnedString_to_cstr(MZOwnedString *str) {
     str->data[str->len] = 0;
     return str->data;
 }
+
+#endif
 

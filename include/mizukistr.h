@@ -27,6 +27,8 @@
 
 #endif
 
+#ifndef MIZUKI_STRING_NO_ALLOC
+
 // A structure represents an **owned** string.
 // We assume the data is allocated on the heap.
 typedef struct MZOwnedString_st_ {
@@ -34,6 +36,8 @@ typedef struct MZOwnedString_st_ {
     size_t len;
     size_t cap;
 } MZOwnedString;
+
+#endif
 
 // A read only string view.
 typedef struct MZStringView_st_ {
@@ -59,6 +63,8 @@ typedef struct MZStringView_st_ {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#ifndef MIZUKI_STRING_NO_ALLOC
 
 // Allocates an empty string. Returns nullptr on allocation failure.
 MZOwnedString *MZOwnedString_new();
@@ -106,14 +112,20 @@ bool MZOwnedString_replace_at(MZOwnedString *str, MZStringView from, MZStringVie
 // NOTICE! You are always supposed to call this function to get the correct C-style string pointer instead of using data member directly, because data might not be zero-terminated before calling to this function.
 char *MZOwnedString_to_cstr(MZOwnedString *str);
 
+#endif
+
 // Create a string view from c style string.
 MZStringView MZStringView_from_cstr(const char *str);
 
 // Create a string view from an address and lengt.
 MZStringView MZStringView_from_addr(const char *addr, size_t len);
 
+#ifndef MIZUKI_STRING_NO_ALLOC
+
 // Create a string view from owned string.
 MZStringView MZStringView_from_str(MZOwnedString *str);
+
+#endif
 
 // Invalid string view.
 MZStringView MZStringView_invalid();

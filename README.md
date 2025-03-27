@@ -24,3 +24,10 @@ You can also `FetchContent` and use the `mizukistr` target.
 
 See examples folder.
 
+## Optional Features
+
+All these features can be enable by enabling corresponding CMake option before build and defining corresponding macro before including the header.
+
+### `MIZUKI_STRING_NO_ALLOC`
+Disables all heap allocations.
+

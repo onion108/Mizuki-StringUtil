@@ -26,12 +26,16 @@ MZStringView MZStringView_from_cstr(const char *str) {
     };
 }
 
+#ifndef MIZUKI_STRING_NO_ALLOC
+
 MZStringView MZStringView_from_str(MZOwnedString *str) {
     return (MZStringView) {
         .data = str->data,
         .len = str->len,
     };
 }
+
+#endif
 
 MZStringView MZStringView_invalid() {
     return (MZStringView) {
@@ -102,7 +106,14 @@ MZStringView MZStringView_find(MZStringView sv, MZStringView pat, MZStringView *
         return MZStringView_invalid();
     }
 
+    #ifdef MIZUKI_STRING_NO_ALLOC
+    if (pat.len < 1024)
+        size_t *lps = alloca(pat.len*sizeof(size_t));
+    else
+        return trivial_find(sv, pat, remain);
+    #else
     size_t *lps = malloc(pat.len*sizeof(size_t));
+    #endif
     if (!lps) return trivial_find(sv, pat, remain);
 
     {
@@ -148,7 +159,9 @@ MZStringView MZStringView_find(MZStringView sv, MZStringView pat, MZStringView *
             else i++;
         }
     }
+    #ifndef MIZUKI_STRING_NO_ALLOC
     free(lps);
+    #endif
 
     if (remain) *remain = sv;
     return MZStringView_invalid();
