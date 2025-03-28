@@ -117,7 +117,7 @@ char *MZOwnedString_to_cstr(MZOwnedString *str);
 // Create a string view from c style string.
 MZStringView MZStringView_from_cstr(const char *str);
 
-// Create a string view from an address and lengt.
+// Create a string view from an address and length.
 MZStringView MZStringView_from_addr(const char *addr, size_t len);
 
 #ifndef MIZUKI_STRING_NO_ALLOC
