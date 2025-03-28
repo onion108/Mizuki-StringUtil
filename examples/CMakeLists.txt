@@ -1,10 +1,10 @@
 
-add_executable(basic basic.c)
-target_link_libraries(basic mizukistr)
+function(build_exmpl target)
+    add_executable(${target} ${target}.c)
+    target_link_libraries(${target} mizukistr)
+endfunction(build_exmpl)
 
-add_executable(view view.c)
-target_link_libraries(view mizukistr)
-
-add_executable(find_and_replace find_and_replace.c)
-target_link_libraries(find_and_replace mizukistr)
-
+build_exmpl(basic)
+build_exmpl(view)
+build_exmpl(find_and_replace)
+build_exmpl(insert_and_delete)
